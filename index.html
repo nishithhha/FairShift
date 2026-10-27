@@ -1,0 +1,1261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FairShift | Where Every Worker Counts and Every Workplace Can Do Better</title>
+  <!-- Chart.js for Interactive Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    /* ==========================================================================
+       FAIRSHIFT SAGE GREEN & BEIGE PALETTE (HIGH-CONTRAST BLACK TEXT)
+       ========================================================================== */
+    :root {
+      --bg-main: #F4F1EA;
+      --bg-card: #FAF9F6;
+      --bg-accent: #EAE5DB;
+      --primary-sage: #4D624E;
+      --dark-sage: #354436;
+      --light-sage: #E2EBDD;
+      --text-main: #111111;
+      --text-muted: #444444;
+      --danger-red: #C53030;
+      --danger-bg: #FFF5F5;
+      --warning-amber: #B7791F;
+      --warning-bg: #FFFDF0;
+      --success-green: #2E6F40;
+      --success-bg: #F0FFF4;
+      --border-color: #D5CEBF;
+      --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      font-family: var(--font-family);
+      line-height: 1.5;
+      padding-bottom: 90px; /* Room for bottom taskbar */
+    }
+
+    .container {
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 1rem 1.2rem;
+    }
+
+    /* Top Brand Banner */
+    .fairshift-banner {
+      background: linear-gradient(135deg, var(--primary-sage) 0%, var(--dark-sage) 100%);
+      padding: 1.2rem 1.6rem;
+      border-radius: 12px;
+      color: #FAF9F6;
+      margin-bottom: 1rem;
+      box-shadow: 0 4px 14px rgba(53, 68, 54, 0.12);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+    .fairshift-banner h1 {
+      color: #FAF9F6;
+      font-size: 2.1rem;
+      font-weight: 700;
+      letter-spacing: -0.5px;
+    }
+    .fairshift-banner p {
+      color: #E2EBDD;
+      font-size: 1.05rem;
+      font-weight: 500;
+      margin-top: 0.2rem;
+    }
+
+    /* User Profile Bar */
+    .user-profile-bar {
+      background-color: var(--bg-accent);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 0.6rem 1rem;
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    /* Cards */
+    .card {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      padding: 1.2rem 1.4rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.03);
+    }
+    .card-accent {
+      border-left: 5px solid var(--primary-sage);
+    }
+    .card-urgent {
+      background-color: var(--danger-bg);
+      border-left: 5px solid var(--danger-red);
+      border-color: #F5C6CB;
+    }
+    .card-warning {
+      background-color: var(--warning-bg);
+      border-left: 5px solid var(--warning-amber);
+      border-color: #F6E05E;
+    }
+    .card-resolved {
+      background-color: var(--success-bg);
+      border-left: 5px solid var(--success-green);
+      border-color: #C6F6D5;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-block;
+      padding: 0.2rem 0.65rem;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+    .badge-sage {
+      background-color: var(--light-sage);
+      color: #2D3E2E;
+      border: 1px solid #C5D6BF;
+    }
+    .badge-urgent {
+      background-color: #FED7D7;
+      color: #9B2C2C;
+      border: 1px solid #FEB2B2;
+    }
+    .badge-warning {
+      background-color: #FEEBC8;
+      color: #7B341E;
+      border: 1px solid #FBD38D;
+    }
+
+    /* Buttons */
+    .btn {
+      display: inline-block;
+      padding: 0.55rem 1.1rem;
+      font-size: 0.95rem;
+      font-weight: 600;
+      border-radius: 8px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      text-align: center;
+      transition: all 0.2s ease;
+    }
+    .btn-primary {
+      background-color: var(--primary-sage);
+      color: #FAF9F6;
+    }
+    .btn-primary:hover {
+      background-color: var(--dark-sage);
+    }
+    .btn-danger {
+      background-color: var(--danger-red);
+      color: #FAF9F6;
+    }
+    .btn-secondary {
+      background-color: #FAF9F6;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+    }
+    .btn-secondary:hover {
+      background-color: var(--bg-accent);
+    }
+    .btn-block {
+      display: block;
+      width: 100%;
+    }
+
+    /* Form Controls */
+    input, select, textarea {
+      width: 100%;
+      padding: 0.6rem 0.8rem;
+      margin-top: 0.3rem;
+      margin-bottom: 0.8rem;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      background-color: #FFFFFF;
+      color: #111111;
+      font-family: inherit;
+      font-size: 0.95rem;
+    }
+    input:focus, select:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-sage);
+      box-shadow: 0 0 0 2px rgba(77, 98, 78, 0.2);
+    }
+    label {
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: var(--text-main);
+    }
+
+    /* Grid Layouts */
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.2rem;
+    }
+    .grid-4 {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+    }
+    @media (max-width: 768px) {
+      .grid-2, .grid-4 {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Bottom Taskbar Navigation Dock */
+    .bottom-dock {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background-color: var(--bg-accent);
+      border-top: 2px solid var(--primary-sage);
+      padding: 0.6rem 1rem;
+      box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+      z-index: 1000;
+    }
+    .dock-container {
+      max-width: 1140px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-around;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+    .dock-btn {
+      flex: 1;
+      min-width: 130px;
+      padding: 0.5rem 0.8rem;
+      border-radius: 8px;
+      font-size: 0.88rem;
+      font-weight: 600;
+      background-color: #FAF9F6;
+      color: var(--text-main);
+      border: 1px solid var(--border-color);
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.2s;
+    }
+    .dock-btn.active {
+      background-color: var(--primary-sage);
+      color: #FAF9F6;
+      border-color: var(--dark-sage);
+    }
+
+    /* Emergency Alert Bar */
+    .emergency-trigger-box {
+      background-color: var(--danger-bg);
+      border: 2px solid var(--danger-red);
+      border-radius: 10px;
+      padding: 0.9rem 1.2rem;
+      margin-bottom: 1.2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+    }
+
+    /* Clean Borderless Login Portal */
+    .clean-login-container {
+      max-width: 600px;
+      margin: 1rem auto;
+      background: transparent;
+      border: none;
+      padding: 1rem 0;
+    }
+
+    /* Tables */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.92rem;
+    }
+    th, td {
+      padding: 0.5rem 0.6rem;
+      text-align: left;
+    }
+    tr:nth-child(even) {
+      background-color: rgba(0, 0, 0, 0.02);
+    }
+
+    /* Voice Recording Pulse */
+    .mic-recording {
+      animation: pulse 1.5s infinite;
+      background-color: var(--danger-red) !important;
+      color: #FFFFFF !important;
+    }
+    @keyframes pulse {
+      0% { box-shadow: 0 0 0 0 rgba(197, 48, 48, 0.5); }
+      70% { box-shadow: 0 0 0 10px rgba(197, 48, 48, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(197, 48, 48, 0); }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =========================================================================
+       SCREEN 1: LOGIN PORTAL (BORDERLESS, NO RECTANGLE BOX)
+       ========================================================================= -->
+  <div id="login-screen" class="container">
+    <div style="text-align: right; margin-bottom: 0.5rem;">
+      <select id="login-lang-select" style="max-width: 200px; display: inline-block;" onchange="changeLanguage(this.value)">
+        <option value="en">English</option>
+        <option value="hi">हिन्दी (Hindi)</option>
+        <option value="ta">தமிழ் (Tamil)</option>
+        <option value="te">తెలుగు (Telugu)</option>
+        <option value="bn">বাংলা (Bengali)</option>
+      </select>
+    </div>
+
+    <div style="text-align: center; margin-top: 1rem; margin-bottom: 1.5rem;">
+      <span class="badge badge-sage" id="txt-sdg-badge">UN SDG 8 • Decent Work and Economic Growth</span>
+      <h1 style="font-size: 3.2rem; margin: 0.2rem 0; color: #354436; font-weight: 800; letter-spacing: -1px;">FairShift</h1>
+      <p id="txt-tagline" style="font-size: 1.2rem; color: #333333; max-width: 650px; margin: 0 auto; font-weight: 500;">
+        Where Every Worker Counts and Every Workplace Can Do Better.
+      </p>
+    </div>
+
+    <div class="clean-login-container">
+      <h3 id="txt-login-heading" style="margin-bottom: 0.3rem;">Sign In to FairShift</h3>
+      <p id="txt-login-sub" style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 1.2rem;">Select your workplace role or use the 1-click demo buttons below.</p>
+
+      <div style="margin-bottom: 1rem;">
+        <label>Portal Role:</label>
+        <div style="display: flex; gap: 1rem; margin-top: 0.3rem;">
+          <label style="font-weight: normal;"><input type="radio" name="login-role" value="worker" checked onchange="toggleLoginRole()"> <span id="txt-worker-role">Worker Portal</span></label>
+          <label style="font-weight: normal;"><input type="radio" name="login-role" value="employer" onchange="toggleLoginRole()"> <span id="txt-employer-role">Employer / Management</span></label>
+        </div>
+      </div>
+
+      <label id="txt-facility-lbl">Workplace Facility:</label>
+      <select id="login-industry">
+        <option value="🏗️ Construction Site">🏗️ Construction Site (Metro Rail Project #4)</option>
+        <option value="🎓 College Campus">🎓 College Campus (Apex University Facilities)</option>
+      </select>
+
+      <div id="worker-fields">
+        <label id="txt-wid-lbl">Worker ID / Badge Number:</label>
+        <input type="text" id="login-wid" value="WRK-8821">
+        <label id="txt-wpin-lbl">Access PIN / Password:</label>
+        <input type="password" id="login-wpass" value="worker123">
+      </div>
+
+      <div id="employer-fields" style="display: none;">
+        <label id="txt-eid-lbl">Administrator / Site ID:</label>
+        <input type="text" id="login-eid" value="EMP-ADMIN">
+        <label id="txt-epin-lbl">Management Password:</label>
+        <input type="password" id="login-epass" value="admin123">
+      </div>
+
+      <button class="btn btn-primary btn-block" style="margin-top: 0.6rem; padding: 0.75rem;" onclick="performLogin()" id="txt-login-btn">Log In to Portal</button>
+
+      <hr style="margin: 1.5rem 0; border: none; border-top: 1px solid var(--border-color);">
+
+      <h5 id="txt-demo-hdr" style="margin-bottom: 0.6rem;">1-Click Interactive Demo Logins (For Judges):</h5>
+      <div style="display: flex; gap: 0.8rem;">
+        <button class="btn btn-secondary" style="flex: 1;" onclick="demoLogin('worker')" id="txt-demo-wbtn">👷 1-Click Worker Demo</button>
+        <button class="btn btn-secondary" style="flex: 1;" onclick="demoLogin('employer')" id="txt-demo-ebtn">🏢 1-Click Employer Demo</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- =========================================================================
+       SCREEN 2: AUTHENTICATED PORTAL WITH BOTTOM DOCK
+       ========================================================================= -->
+  <div id="app-screen" style="display: none;">
+    <div class="container">
+      
+      <!-- Top Brand Banner -->
+      <div class="fairshift-banner">
+        <div>
+          <h1>FairShift</h1>
+          <p id="app-tagline">Where Every Worker Counts and Every Workplace Can Do Better.</p>
+        </div>
+        <div style="text-align: right;">
+          <span class="badge badge-sage" id="app-industry-badge">🏗️ Construction Site</span><br>
+          <small style="color: #E2EBDD;" id="app-user-badge">Ramesh Kumar (WRK-8821)</small>
+        </div>
+      </div>
+
+      <!-- Controls Row -->
+      <div class="user-profile-bar">
+        <div style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap;">
+          <div>
+            <label style="font-size: 0.82rem;">Switch Facility:</label>
+            <select id="app-switch-facility" style="width: auto; padding: 0.3rem 0.6rem; margin: 0;" onchange="switchIndustry(this.value)">
+              <option value="🏗️ Construction Site">🏗️ Construction Site</option>
+              <option value="🎓 College Campus">🎓 College Campus</option>
+            </select>
+          </div>
+          <div>
+            <label style="font-size: 0.82rem;">Language:</label>
+            <select id="app-switch-lang" style="width: auto; padding: 0.3rem 0.6rem; margin: 0;" onchange="changeLanguage(this.value)">
+              <option value="en">English</option>
+              <option value="hi">हिन्दी (Hindi)</option>
+              <option value="ta">தமிழ் (Tamil)</option>
+              <option value="te">తెలుగు (Telugu)</option>
+              <option value="bn">বাংলা (Bengali)</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-secondary" style="padding: 0.35rem 0.8rem; font-size: 0.88rem;" onclick="logout()">🚪 Logout</button>
+      </div>
+
+      <!-- One-Tap Emergency Bar -->
+      <div class="emergency-trigger-box">
+        <div>
+          <h4 style="color: var(--danger-red); margin: 0;">⚠️ Immediate Danger & Critical Hazard Channel</h4>
+          <small style="color: #4A1D1D;">For active life-threatening perils (collapse, toxic gas, fire, high-voltage).</small>
+        </div>
+        <button class="btn btn-danger" onclick="toggleEmergencyModal()">🚨 REPORT IMMEDIATE DANGER</button>
+      </div>
+
+      <!-- Emergency Form (Collapsible) -->
+      <div id="emergency-modal" class="card card-urgent" style="display: none; margin-bottom: 1.2rem;">
+        <div style="background: #FFF; padding: 0.6rem 0.8rem; border-left: 4px solid var(--warning-amber); margin-bottom: 0.8rem;">
+          <small><b>⚠️ IMPORTANT EMERGENCY NOTICE:</b> Submitting this digital hazard report alerts on-site safety coordinators. It does NOT automatically call government police, fire, or ambulance services. If you face immediate danger, follow site evacuation routes and dial local emergency services (112 / 100 / 101).</small>
+        </div>
+        <div class="grid-2">
+          <div>
+            <label>Hazard Category:</label>
+            <select id="em-category">
+              <option>Structural Collapse / Scaffolding Sway Risk</option>
+              <option>Fire, Electrical Spark or High-Voltage Hazard</option>
+              <option>Toxic Chemical, Acid or Gas Leakage</option>
+              <option>Heavy Machinery Entanglement / Brake Failure</option>
+              <option>Physical Violence, Threat or Severe Harassment</option>
+            </select>
+            <label>Location / Work Area:</label>
+            <input type="text" id="em-location" placeholder="e.g. Tower B - 4th Floor Scaffolding">
+            <label>Short Description:</label>
+            <textarea id="em-desc" rows="2" placeholder="Describe the active danger..."></textarea>
+            <button class="btn btn-danger btn-block" onclick="submitEmergency()">🚨 SUBMIT EMERGENCY ALERT</button>
+          </div>
+          <div class="card card-accent" style="margin: 0;">
+            <h4>Designated On-Site Contacts:</h4>
+            <p id="em-contacts" style="font-size: 0.92rem; margin-top: 0.5rem; line-height: 1.6;">
+              • <b>Safety Lead:</b> Rajesh Varma (+91 98765-43210)<br>
+              • <b>First Aid:</b> Gate 2 Medical Post<br>
+              • <b>Assembly Point:</b> Zone Alpha (Batching Plant)<br>
+              • <b>Emergency Services:</b> Dial 112 / 101
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- =====================================================================
+           PORTAL CONTENT (WORKER VS EMPLOYER)
+           ===================================================================== -->
+      <div id="portal-content"></div>
+
+    </div>
+  </div>
+
+  <!-- =========================================================================
+       BOTTOM TASKBAR NAVIGATION DOCK
+       ========================================================================= -->
+  <div id="bottom-dock-bar" class="bottom-dock" style="display: none;">
+    <div class="dock-container" id="dock-buttons"></div>
+  </div>
+
+
+  <!-- =========================================================================
+       JAVASCRIPT: APPLICATION LOGIC, TRANSLATION, CHARTS & PERSISTENCE
+       ========================================================================= -->
+  <script>
+    // --- TRANSLATION DATA ---
+    const TRANSLATIONS = {
+      en: {
+        tagline: "Where Every Worker Counts and Every Workplace Can Do Better.",
+        sdg: "UN SDG 8 • Decent Work and Economic Growth",
+        login_h: "Sign In to FairShift",
+        login_sub: "Select your workplace role or use the 1-click demo buttons below.",
+        w_role: "Worker Portal",
+        e_role: "Employer / Management",
+        fac_lbl: "Workplace Facility:",
+        wid_lbl: "Worker ID / Badge Number:",
+        wpin_lbl: "Access PIN / Password:",
+        eid_lbl: "Administrator / Site ID:",
+        epin_lbl: "Management Password:",
+        login_btn: "Log In to Portal",
+        demo_hdr: "1-Click Interactive Demo Logins (For Judges):",
+        demo_wbtn: "👷 1-Click Worker Demo",
+        demo_ebtn: "🏢 1-Click Employer Demo",
+        w_dash: "Personal Dashboard",
+        w_griev: "Grievance & Safety",
+        w_att: "Attendance & Payslip",
+        w_rights: "Rights Assistant",
+        e_guard: "Guardian Dashboard",
+        e_audit: "Fairness Audit",
+        e_radar: "Risk Radar",
+        e_root: "Root-Cause",
+        e_plan: "Intervention Planner"
+      },
+      hi: {
+        tagline: "जहाँ हर कर्मचारी का महत्व है और हर कार्यस्थल बेहतर बन सकता है।",
+        sdg: "संयुक्त राष्ट्र एसडीजी 8 • गरिमापूर्ण कार्य और आर्थिक विकास",
+        login_h: "FairShift में साइन इन करें",
+        login_sub: "अपनी कार्यस्थल भूमिका चुनें या त्वरित डेमो बटन का उपयोग करें।",
+        w_role: "कर्मचारी पोर्टल",
+        e_role: "नियोक्ता / प्रबंधन",
+        fac_lbl: "कार्यस्थल परिसर:",
+        wid_lbl: "कर्मचारी आईडी / बैज संख्या:",
+        wpin_lbl: "पासवर्ड / पिन:",
+        eid_lbl: "प्रशासक / साइट आईडी:",
+        epin_lbl: "प्रबंधन पासवर्ड:",
+        login_btn: "पोर्टल में प्रवेश करें",
+        demo_hdr: "1-क्लिक त्वरित डेमो लॉगिन (जजों के लिए):",
+        demo_wbtn: "👷 1-क्लिक कर्मचारी डेमो",
+        demo_ebtn: "🏢 1-क्लिक नियोक्ता डेमो",
+        w_dash: "व्यक्तिगत डैशबोर्ड",
+        w_griev: "शिकायत और सुरक्षा",
+        w_att: "उपस्थिति और पे-स्लिप",
+        w_rights: "अधिकार सहायक",
+        e_guard: "गार्डियन डैशबोर्ड",
+        e_audit: "निष्पक्षता ऑडिट",
+        e_radar: "जोखिम रडार",
+        e_root: "मूल-कारण विश्लेषण",
+        e_plan: "हस्तक्षेप योजना"
+      },
+      ta: {
+        tagline: "ஒவ்வொரு தொழிலாளியும் மதிக்கப்படும் இடம், ஒவ்வொரு பணியிடமும் சிறக்க முடியும்.",
+        sdg: "ஐநா SDG 8 • கண்ணியமான வேலை மற்றும் பொருளாதார வளர்ச்சி",
+        login_h: "FairShift உள்நுழைவு",
+        login_sub: "உங்கள் பணியிடப் பாத்திரத்தைத் தேர்ந்தெடுக்கவும் அல்லது டெமோவை அழுத்தவும்.",
+        w_role: "தொழிலாளர் போர்டல்",
+        e_role: "நிர்வாகம் / முதலாளி",
+        fac_lbl: "பணியிட வளாகம்:",
+        wid_lbl: "தொழிலாளர் ஐடி எண்:",
+        wpin_lbl: "கடவுச்சொல் / பின்:",
+        eid_lbl: "நிர்வாக ஐடி:",
+        epin_lbl: "கடவுச்சொல்:",
+        login_btn: "உள்நுழைக",
+        demo_hdr: "1-கிளிக் டெமோ உள்நுழைவு (நீதிபதிகளுக்கு):",
+        demo_wbtn: "👷 1-கிளிக் தொழிலாளர் டெமோ",
+        demo_ebtn: "🏢 1-கிளிக் நிர்வாகி டெமோ",
+        w_dash: "தனிப்பட்ட டாஷ்போர்டு",
+        w_griev: "புகார் & பாதுகாப்பு",
+        w_att: "வருகை & சம்பளச்சீட்டு",
+        w_rights: "உரிமைகள் உதவியாளர்",
+        e_guard: "கார்டியன் டாஷ்போர்டு",
+        e_audit: "நியாயமான தணிக்கை",
+        e_radar: "ஆபத்து ரேடார்",
+        e_root: "மூலக் காரணம்",
+        e_plan: "தலையீட்டு திட்டம்"
+      },
+      te: {
+        tagline: "ప్రతి కార్మికుడికి ప్రాముఖ్యత ఉన్న చోట మరియు ప్రతి కార్యాలయం మరింత మెరుగుపడగలదు.",
+        sdg: "ఐరాస SDG 8 • గౌరవప్రదమైన పని మరియు ఆర్థిక వృద్ధి",
+        login_h: "FairShift లాగిన్",
+        login_sub: "మీ కార్యాలయ పాత్రను ఎంచుకోండి లేదా డెమో క్లిక్ చేయండి.",
+        w_role: "కార్మికుల పోర్టల్",
+        e_role: "యాజమాన్యం / అడ్మిన్",
+        fac_lbl: "కార్యాలయ వాతావరణం:",
+        wid_lbl: "కార్మికుడి ఐడి నంబర్:",
+        wpin_lbl: "పాస్వర్డ్ / పిన్:",
+        eid_lbl: "అడ్మిన్ ఐడి:",
+        epin_lbl: "పాస్వర్డ్:",
+        login_btn: "లాగిన్ అవ్వండి",
+        demo_hdr: "1-క్లిక్ డెమో లాగిన్ (జడ్జీల కోసం):",
+        demo_wbtn: "👷 1-క్లిక్ కార్మికుల డెమో",
+        demo_ebtn: "🏢 1-క్లిక్ అడ్మిన్ డెమో",
+        w_dash: "వ్యక్తిగత డాష్‌బోర్డ్",
+        w_griev: "ఫిర్యాదు & భద్రత",
+        w_att: "హాజరు & పేస్లిప్",
+        w_rights: "హక్కుల సహాయకుడు",
+        e_guard: "గార్డియన్ డాష్‌బోర్డ్",
+        e_audit: "న్యాయమైన ఆడిట్",
+        e_radar: "ప్రమాద రాడార్",
+        e_root: "మూల కారణం",
+        e_plan: "నివారణ ప్రణాళిక"
+      },
+      bn: {
+        tagline: "যেখানে প্রতিটি কর্মী গুরুত্বপূর্ণ এবং প্রতিটি কর্মক্ষেত্র আরও ভালো হতে পারে।",
+        sdg: "জাতিসংঘের এসডিজি ৮ • উপযুক্ত কাজ এবং অর্থনৈতিক বৃদ্ধি",
+        login_h: "FairShift এ সাইন ইন করুন",
+        login_sub: "আপনার কর্মক্ষেত্রের ভূমিকা নির্বাচন করুন বা ডেমো ক্লিক করুন।",
+        w_role: "কর্মী পোর্টাল",
+        e_role: "নিয়োগকর্তা / ব্যবস্থাপনা",
+        fac_lbl: "কর্মক্ষেত্রের পরিবেশ:",
+        wid_lbl: "কর্মী আইডি / ব্যাজ নম্বর:",
+        wpin_lbl: "পাসওয়ার্ড / পিন:",
+        eid_lbl: "প্রশাসক আইডি:",
+        epin_lbl: "পাসওয়ার্ড:",
+        login_btn: "লগইন করুন",
+        demo_hdr: "১-ক্লিক ডেমো লগইন (বিচারকদের জন্য):",
+        demo_wbtn: "👷 ১-ক্লিক কর্মী ডেমো",
+        demo_ebtn: "🏢 ১-ক্লিক অ্যাডমিন ডেমো",
+        w_dash: "ব্যক্তিগত ড্যাশবোর্ড",
+        w_griev: "অভিযোগ ও নিরাপত্তা",
+        w_att: "উপস্থিতি ও বেতন রশিদ",
+        w_rights: "অধিকার সহকারী",
+        e_guard: "গার্ডিয়ান ড্যাশবোর্ড",
+        e_audit: "ন্যায্যতা নিরীক্ষা",
+        e_radar: "ঝুঁকি রাডার",
+        e_root: "মূল কারণ",
+        e_plan: "হস্তক্ষেপ পরিকল্পনাকারী"
+      }
+    };
+
+    // Default Persistent Data Store
+    let STORE = JSON.parse(localStorage.getItem("fairshift_store")) || {
+      tickets: [
+        { id: "TICK-201", industry: "🏗️ Construction Site", type: "Faulty Machinery / Unsafe Equipment", content: "Crane hoist wire on Tower Crane B has visible fraying near the drum.", urgency: "🔴 Critical", status: "In Progress", remediation: "Immediate suspension of Crane B; mechanical tension testing scheduled.", timestamp: "Today, 08:30" },
+        { id: "TICK-202", industry: "🏗️ Construction Site", type: "Women Safety & Harassment Prevention", content: "Sanitation pathway from Sector 3 staff quarters to gate has no functioning lights.", urgency: "🔴 Critical", status: "Pending Review", remediation: "Install dual LED solar floodlights along Sector 3 walkway.", timestamp: "Yesterday, 19:15" },
+        { id: "TICK-204", industry: "🎓 College Campus", type: "Faulty Machinery / Unsafe Equipment", content: "Acid fume hood exhaust motor in Chemistry Lab 204 burned out.", urgency: "🔴 Critical", status: "In Progress", remediation: "Fume hood locked out; replacement motor dispatched.", timestamp: "Today, 09:10" }
+      ],
+      interventions: [
+        { id: "INT-301", industry: "🏗️ Construction Site", problem: "Repeated Scaffolding Sway Alerts", evidence: "3 hazard reports filed in 48 hours for Tower B. Vibration measured at 4.2mm lateral shift.", action: "Halt upper deck concrete pumping. Inspect vertical jacks and retorque clamping bolts.", department: "Site Structural Safety", target_date: "2026-10-29", status: "Action In Progress", resolution_notes: "Structural inspection team deployed." },
+        { id: "INT-302", industry: "🏗️ Construction Site", problem: "Discrepancy: Biometric vs. Payroll Overtime in Batch 3", evidence: "Biometric turnstile recorded 18.5 OT hours for 24 workers. Ledger credited only 12.0 hours (Shortfall: 6.5 hrs = ₹731/worker).", action: "Reconcile gate punch logs with foreman sheet. Issue supplementary payroll credit.", department: "Payroll & HR Operations", target_date: "2026-10-31", status: "Completed & Verified", resolution_notes: "₹17,544 supplementary disbursement processed on Oct 26." }
+      ],
+      leave_requests: [
+        { id: "LV-501", worker_id: "WRK-8821", type: "Paid Sick Leave", dates: "2026-10-28 to 2026-10-29 (2 Days)", reason: "Doctor appointment for respiratory checkup", status: "✅ Approved" }
+      ]
+    };
+
+    function saveStore() {
+      localStorage.setItem("fairshift_store", JSON.stringify(STORE));
+    }
+
+    // Active State
+    let currentUser = null;
+    let currentLang = "en";
+    let activeTab = "dashboard";
+
+    function t(key) {
+      return TRANSLATIONS[currentLang] ? (TRANSLATIONS[currentLang][key] || TRANSLATIONS.en[key]) : TRANSLATIONS.en[key];
+    }
+
+    function changeLanguage(lang) {
+      currentLang = lang;
+      document.getElementById("login-lang-select").value = lang;
+      document.getElementById("app-switch-lang").value = lang;
+
+      // Update text in login screen
+      document.getElementById("txt-sdg-badge").innerText = t("sdg");
+      document.getElementById("txt-tagline").innerText = t("tagline");
+      document.getElementById("app-tagline").innerText = t("tagline");
+      document.getElementById("txt-login-heading").innerText = t("login_h");
+      document.getElementById("txt-login-sub").innerText = t("login_sub");
+      document.getElementById("txt-worker-role").innerText = t("w_role");
+      document.getElementById("txt-employer-role").innerText = t("e_role");
+      document.getElementById("txt-facility-lbl").innerText = t("fac_lbl");
+      document.getElementById("txt-wid-lbl").innerText = t("wid_lbl");
+      document.getElementById("txt-wpin-lbl").innerText = t("wpin_lbl");
+      document.getElementById("txt-eid-lbl").innerText = t("eid_lbl");
+      document.getElementById("txt-epin-lbl").innerText = t("epin_lbl");
+      document.getElementById("txt-login-btn").innerText = t("login_btn");
+      document.getElementById("txt-demo-hdr").innerText = t("demo_hdr");
+      document.getElementById("txt-demo-wbtn").innerText = t("demo_wbtn");
+      document.getElementById("txt-demo-ebtn").innerText = t("demo_ebtn");
+
+      if (currentUser) {
+        renderPortal();
+      }
+    }
+
+    function toggleLoginRole() {
+      const isWorker = document.querySelector('input[name="login-role"]:checked').value === "worker";
+      document.getElementById("worker-fields").style.display = isWorker ? "block" : "none";
+      document.getElementById("employer-fields").style.display = isWorker ? "none" : "block";
+    }
+
+    function performLogin() {
+      const isWorker = document.querySelector('input[name="login-role"]:checked').value === "worker";
+      const industry = document.getElementById("login-industry").value;
+      currentUser = {
+        role: isWorker ? "worker" : "employer",
+        id: isWorker ? document.getElementById("login-wid").value : document.getElementById("login-eid").value,
+        name: isWorker ? "Ramesh Kumar (Mason & Rigger)" : "Rajesh Varma (Site Safety Lead)",
+        industry: industry
+      };
+      launchApp();
+    }
+
+    function demoLogin(role) {
+      const industry = document.getElementById("login-industry").value;
+      currentUser = {
+        role: role,
+        id: role === "worker" ? "WRK-8821" : "EMP-ADMIN",
+        name: role === "worker" ? "Ramesh Kumar (Mason & Rigger)" : "Rajesh Varma (Site Safety Lead)",
+        industry: industry
+      };
+      launchApp();
+    }
+
+    function launchApp() {
+      document.getElementById("login-screen").style.display = "none";
+      document.getElementById("app-screen").style.display = "block";
+      document.getElementById("bottom-dock-bar").style.display = "block";
+      document.getElementById("app-industry-badge").innerText = currentUser.industry;
+      document.getElementById("app-user-badge").innerText = `${currentUser.name} (${currentUser.id})`;
+      document.getElementById("app-switch-facility").value = currentUser.industry;
+      activeTab = "dashboard";
+      renderPortal();
+    }
+
+    function logout() {
+      currentUser = null;
+      document.getElementById("login-screen").style.display = "block";
+      document.getElementById("app-screen").style.display = "none";
+      document.getElementById("bottom-dock-bar").style.display = "none";
+    }
+
+    function switchIndustry(ind) {
+      currentUser.industry = ind;
+      document.getElementById("app-industry-badge").innerText = ind;
+      renderPortal();
+    }
+
+    function toggleEmergencyModal() {
+      const m = document.getElementById("emergency-modal");
+      m.style.display = m.style.display === "none" ? "block" : "none";
+    }
+
+    function submitEmergency() {
+      const loc = document.getElementById("em-location").value.trim();
+      const desc = document.getElementById("em-desc").value.trim();
+      const cat = document.getElementById("em-category").value;
+      if (!loc || !desc) {
+        alert("Please enter location and description.");
+        return;
+      }
+      const newId = `EMERG-${STORE.tickets.length + 902}`;
+      STORE.interventions.unshift({
+        id: `INT-${STORE.interventions.length + 305}`,
+        industry: currentUser.industry,
+        problem: `URGENT: ${cat} at ${loc}`,
+        evidence: `Direct Emergency Trigger #${newId}: ${desc}`,
+        action: "Immediate evacuation of hazard zone; site supervisor inspection within 15 minutes.",
+        department: "Emergency Safety Response",
+        target_date: new Date().toISOString().split("T")[0],
+        status: "Action In Progress",
+        resolution_notes: `Emergency alert ${newId} logged.`
+      });
+      saveStore();
+      alert(`🚨 EMERGENCY REPORT #${newId} DISPATCHED TO ON-SITE SAFETY DESK!`);
+      document.getElementById("em-location").value = "";
+      document.getElementById("em-desc").value = "";
+      toggleEmergencyModal();
+      renderPortal();
+    }
+
+    // --- RENDER PORTAL CONTENT ---
+    function renderPortal() {
+      renderDock();
+      const content = document.getElementById("portal-content");
+      if (currentUser.role === "worker") {
+        renderWorkerPortal(content);
+      } else {
+        renderEmployerPortal(content);
+      }
+    }
+
+    function renderDock() {
+      const dock = document.getElementById("dock-buttons");
+      if (currentUser.role === "worker") {
+        dock.innerHTML = `
+          <button class="dock-btn ${activeTab==='dashboard'?'active':''}" onclick="setTab('dashboard')">🏠 ${t('w_dash')}</button>
+          <button class="dock-btn ${activeTab==='grievance'?'active':''}" onclick="setTab('grievance')">🚨 ${t('w_griev')}</button>
+          <button class="dock-btn ${activeTab==='attendance'?'active':''}" onclick="setTab('attendance')">⏱️ ${t('w_att')}</button>
+          <button class="dock-btn ${activeTab==='rights'?'active':''}" onclick="setTab('rights')">🤖 ${t('w_rights')}</button>
+        `;
+      } else {
+        dock.innerHTML = `
+          <button class="dock-btn ${activeTab==='dashboard'?'active':''}" onclick="setTab('dashboard')">🏢 ${t('e_guard')}</button>
+          <button class="dock-btn ${activeTab==='audit'?'active':''}" onclick="setTab('audit')">📊 ${t('e_audit')}</button>
+          <button class="dock-btn ${activeTab==='radar'?'active':''}" onclick="setTab('radar')">📡 ${t('e_radar')}</button>
+          <button class="dock-btn ${activeTab==='rootcause'?'active':''}" onclick="setTab('rootcause')">🔍 ${t('e_root')}</button>
+          <button class="dock-btn ${activeTab==='intervention'?'active':''}" onclick="setTab('intervention')">🎯 ${t('e_plan')}</button>
+        `;
+      }
+    }
+
+    function setTab(tab) {
+      activeTab = tab;
+      renderPortal();
+    }
+
+    // =========================================================================
+    // WORKER VIEWS (WITH VOICE-TO-TEXT)
+    // =========================================================================
+    function renderWorkerPortal(container) {
+      if (activeTab === "dashboard") {
+        container.innerHTML = `
+          <div class="grid-4">
+            <div class="card"><small>Today's Shift Status</small><h3 style="color:var(--success-green);">🟢 Checked In</h3><small>08:00 AM - 05:00 PM</small></div>
+            <div class="card"><small>Regular Days Worked</small><h3>22 Days</h3><small>Base: ₹16,500</small></div>
+            <div class="card"><small>Safe Overtime Remaining</small><h3 style="color:var(--primary-sage);">4 Hours Left</h3><span class="badge badge-sage">Cap: 20 hrs/mo</span></div>
+            <div class="card"><small>Paid Leave Balance</small><h3 style="color:var(--success-green);">9 Days</h3><small>1 Request Pending</small></div>
+          </div>
+          <div class="grid-2">
+            <div class="card card-accent">
+              <h4>📢 Personal Notices & Safety Protocol</h4>
+              <p style="margin-top:0.4rem; font-size:0.92rem;">
+                • <b>PPE Mandate:</b> Helmets and steel-toed boots required in all active crane zones.<br>
+                • <b>Upcoming Pay Date:</b> Monthly salary disbursement cycle initiates on the 30th.<br>
+                • <b>Leave Balance:</b> 9 paid leave days remaining for the calendar year.
+              </p>
+            </div>
+            <div class="card">
+              <h4>🎫 My Submissions</h4>
+              <div style="margin-top:0.5rem; font-size:0.92rem;">
+                <p><b>Ticket #TICK-202:</b> Women Safety & Harassment Prevention • <span class="badge badge-warning">Pending Review</span></p>
+                <small style="color:var(--text-muted);">Pathway lighting near Sector 3 quarters.</small>
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (activeTab === "grievance") {
+        container.innerHTML = `
+          <div class="grid-2">
+            <div class="card">
+              <h3>📝 Submit a Grievance or Report</h3>
+              <label>Identity Mode:</label>
+              <select id="gr-mode">
+                <option>🔒 100% Anonymous (No identity attached)</option>
+                <option>🆔 Remote with My Worker ID (WRK-8821)</option>
+              </select>
+              <label>Report Category:</label>
+              <select id="gr-cat">
+                <option>👩 Women Safety & Harassment Prevention</option>
+                <option>👔 Supervisor / Management Misconduct</option>
+                <option>⚙️ Faulty Machinery / Unsafe Equipment</option>
+                <option>🏗️ General Workplace Hazard / Unhygienic Facilities</option>
+                <option>💰 Unpaid Wages / Overtime Discrepancy</option>
+              </select>
+              <label>Specific Work Location:</label>
+              <input type="text" id="gr-loc" placeholder="e.g. Night Shift Gate 2, Chemistry Lab 204">
+              
+              <!-- 🎙️ NATIVE BROWSER VOICE-TO-TEXT -->
+              <div style="background:var(--bg-accent); padding:0.8rem; border-radius:8px; margin:0.8rem 0; border:1px solid var(--border-color);">
+                <label>🎙️ Record Voice Complaint (Voice-to-Text):</label>
+                <p style="font-size:0.82rem; color:var(--text-muted); margin-bottom:0.4rem;">Tap the button and speak your complaint in Hindi, Tamil, Telugu, Bengali, or English:</p>
+                <button type="button" class="btn btn-secondary" id="btn-voice-rec" onclick="startVoiceRecognition()">🎤 Tap to Speak Voice Complaint</button>
+                <span id="voice-status" style="font-size:0.85rem; margin-left:0.5rem; color:var(--primary-sage);"></span>
+              </div>
+
+              <label>Details / Transcribed Text:</label>
+              <textarea id="gr-desc" rows="4" placeholder="Your speech will automatically transcribe here..."></textarea>
+              <button class="btn btn-primary btn-block" onclick="submitGrievance()">🔒 SUBMIT REPORT</button>
+            </div>
+            <div class="card">
+              <h3>🔍 Recent Reports in This Facility</h3>
+              <div id="recent-tickets" style="margin-top:0.8rem;">
+                ${STORE.tickets.filter(t=>t.industry===currentUser.industry).map(t=>`
+                  <div class="card card-urgent" style="padding:0.8rem; margin-bottom:0.6rem;">
+                    <b>Ticket #${t.id}: ${t.type}</b> <span class="badge badge-sage" style="float:right;">${t.status}</span><br>
+                    <small><i>"${t.content}"</i></small><br>
+                    <small style="color:var(--text-muted);"><b>Remediation:</b> ${t.remediation}</small>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      } else if (activeTab === "attendance") {
+        container.innerHTML = `
+          <div class="grid-2">
+            <div class="card">
+              <h3>📍 Attendance & Shift Tracking</h3>
+              <div style="display:flex; gap:0.5rem; margin:0.6rem 0;">
+                <button class="btn btn-secondary" style="flex:1;" onclick="alert('✅ QR Code Verified: Turnstile Gate 2 logged at 08:00 AM')">📷 Scan QR Code</button>
+                <button class="btn btn-secondary" style="flex:1;" onclick="alert('✅ Geo-Location Confirmed: Zone 3 logged at 08:30 AM')">🛰️ Geo Check-In</button>
+              </div>
+              <hr style="margin:1rem 0; border:none; border-top:1px solid var(--border-color);">
+              <h4>⏱️ Monthly Hours & Safety Overtime Cap</h4>
+              <p style="font-size:0.85rem; color:var(--text-muted);">Standard Shift: 8 hrs | Overtime Rate: 1.5x regular pay</p>
+              <label>Overtime Hours Clocked This Month:</label>
+              <input type="range" id="ot-slider" min="0" max="30" value="16" oninput="updateOvertimeCalc(this.value)">
+              <p>Logged Overtime: <b id="ot-hours-display">16 Hours</b> (Safety Cap: 20 Hours)</p>
+              <div id="ot-lock-banner" style="display:none; background:var(--danger-bg); border:2px dashed var(--danger-red); padding:0.8rem; border-radius:8px; margin:0.8rem 0;">
+                <h5 style="color:var(--danger-red); margin:0;">🛑 PORTAL SAFETY LOCK ACTIVE: OVERTIME CAP EXCEEDED</h5>
+                <small>You have reached the maximum safe overtime limit. Additional shift booking is locked to prevent fatigue accidents under SDG 8.8.</small>
+              </div>
+
+              <hr style="margin:1rem 0; border:none; border-top:1px solid var(--border-color);">
+              <h4>🏖️ Application for Paid Leave</h4>
+              <small>Accrued: 12 Days | Balance: 9 Days</small>
+              <select id="lv-type" style="margin-top:0.4rem;">
+                <option>Paid Sick Leave</option>
+                <option>Casual Paid Leave</option>
+                <option>Emergency Family Leave</option>
+              </select>
+              <input type="text" id="lv-reason" placeholder="Reason for leave...">
+              <button class="btn btn-primary btn-block" onclick="submitLeave()">Submit Paid Leave Request</button>
+            </div>
+
+            <div class="card card-accent">
+              <h3>💵 Transparent Payslip Breakdown</h3>
+              <p style="font-size:0.9rem; color:var(--text-muted); margin-bottom:0.8rem;">Every hour and deduction audited fairly under SDG 8.5.</p>
+              <table>
+                <tr><td>• Base Pay (22 days @ ₹750/day):</td><td style="text-align:right; font-weight:600;">₹16,500</td></tr>
+                <tr><td>• Overtime Pay (<span id="ot-count-slip">16</span> hrs @ 1.5x):</td><td style="text-align:right; font-weight:600;" id="ot-pay-slip">₹2,250</td></tr>
+                <tr><td>• Paid Leave Credit (1 approved day):</td><td style="text-align:right; font-weight:600;">₹750</td></tr>
+                <tr><td style="color:var(--danger-red);">• Canteen & Uniform Deductions:</td><td style="text-align:right; color:var(--danger-red);">-₹750</td></tr>
+                <tr style="border-top:2px solid var(--border-color);"><td style="font-weight:700; font-size:1.05rem;">Net Take-Home Credited:</td><td style="text-align:right; font-weight:700; font-size:1.05rem; color:var(--success-green);" id="net-pay-slip">₹18,750</td></tr>
+              </table>
+              <button class="btn btn-secondary btn-block" style="margin-top:1rem;" onclick="speakPayslip()">🗣️ Hear Payslip Explanation in My Language</button>
+            </div>
+          </div>
+        `;
+      } else if (activeTab === "rights") {
+        container.innerHTML = `
+          <div class="card card-accent" style="margin-bottom:1rem;">
+            <h3>🤖 AI Worker Rights Assistant</h3>
+            <small style="color:var(--text-muted);">ℹ️ Informational guidance only. This assistant explains workplace standards and does not provide formal legal advice.</small>
+          </div>
+          <div class="grid-2">
+            <div class="card">
+              <h4>Select a Common Workplace Question:</h4>
+              <button class="btn btn-secondary btn-block" style="margin:0.4rem 0; text-align:left;" onclick="showRightsFaq(1)">❓ Why is my overtime pay different this month?</button>
+              <button class="btn btn-secondary btn-block" style="margin:0.4rem 0; text-align:left;" onclick="showRightsFaq(2)">❓ What should I do if my salary hasn't been paid?</button>
+              <button class="btn btn-secondary btn-block" style="margin:0.4rem 0; text-align:left;" onclick="showRightsFaq(3)">❓ How do I report an unsafe working condition?</button>
+              <button class="btn btn-secondary btn-block" style="margin:0.4rem 0; text-align:left;" onclick="showRightsFaq(4)">❓ What does this deduction on my payslip mean?</button>
+            </div>
+            <div class="card card-accent" id="rights-answer-box">
+              <h4>Workplace Policy Guidance</h4>
+              <p style="margin-top:0.4rem; font-size:0.95rem;">Click any question on the left to view simple, reliable guidance and practical next steps.</p>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    // Voice-to-Text Recognition Handler
+    function startVoiceRecognition() {
+      const btn = document.getElementById("btn-voice-rec");
+      const status = document.getElementById("voice-status");
+      const descArea = document.getElementById("gr-desc");
+
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        status.innerText = "Speech API simulated (Not supported in this browser)";
+        descArea.value = "Voice complaint recorded: Scaffolding shaking on 4th floor; supervisor notified of uncounted night overtime.";
+        return;
+      }
+
+      const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRec();
+      recognition.continuous = false;
+      recognition.interimResults = false;
+      
+      const langMap = { en: "en-IN", hi: "hi-IN", ta: "ta-IN", te: "te-IN", bn: "bn-IN" };
+      recognition.lang = langMap[currentLang] || "en-IN";
+
+      btn.classList.add("mic-recording");
+      status.innerText = "🎙️ Listening... Please speak now!";
+
+      recognition.onresult = function(event) {
+        const transcript = event.results[0][0].transcript;
+        descArea.value = transcript;
+        status.innerText = "✅ Voice converted to text!";
+        btn.classList.remove("mic-recording");
+      };
+
+      recognition.onerror = function() {
+        status.innerText = "Simulated: Audio note recorded.";
+        descArea.value = "Voice recording: Reported safety concern regarding unlit pathway and overtime deduction.";
+        btn.classList.remove("mic-recording");
+      };
+
+      recognition.onend = function() {
+        btn.classList.remove("mic-recording");
+      };
+
+      recognition.start();
+    }
+
+    function submitGrievance() {
+      const details = document.getElementById("gr-desc").value.trim();
+      const cat = document.getElementById("gr-cat").value;
+      const loc = document.getElementById("gr-loc").value.trim() || "General Area";
+      const mode = document.getElementById("gr-mode").value;
+      if (!details) {
+        alert("Please provide complaint details or speak into the microphone.");
+        return;
+      }
+      const newId = `TICK-${STORE.tickets.length + 201}`;
+      STORE.tickets.unshift({
+        id: newId,
+        industry: currentUser.industry,
+        type: cat,
+        content: details,
+        urgency: "🔴 Critical",
+        status: "Pending Review",
+        remediation: "Assigned to compliance officer for impartial site review.",
+        timestamp: "Just now"
+      });
+      saveStore();
+      alert(`✅ Report filed successfully! Confidential Ticket ID: ${newId}`);
+      document.getElementById("gr-desc").value = "";
+      renderPortal();
+    }
+
+    function updateOvertimeCalc(hours) {
+      document.getElementById("ot-hours-display").innerText = `${hours} Hours`;
+      const isLocked = parseInt(hours) >= 20;
+      document.getElementById("ot-lock-banner").style.display = isLocked ? "block" : "none";
+      const credited = isLocked ? 20 : parseInt(hours);
+      const otPay = credited * 140.6;
+      document.getElementById("ot-count-slip").innerText = credited;
+      document.getElementById("ot-pay-slip").innerText = `₹${Math.round(otPay).toLocaleString()}`;
+      document.getElementById("net-pay-slip").innerText = `₹${Math.round(16500 + otPay).toLocaleString()}`;
+    }
+
+    function submitLeave() {
+      const reason = document.getElementById("lv-reason").value.trim();
+      if (!reason) {
+        alert("Please enter a reason for your leave.");
+        return;
+      }
+      alert("✅ Paid leave request submitted to HR for approval.");
+      document.getElementById("lv-reason").value = "";
+    }
+
+    function speakPayslip() {
+      const text = `Hello. Your take home salary is 18,750 rupees. You worked 22 regular days and 16 overtime hours. All hours are verified under SDG 8 decent work.`;
+      if ('speechSynthesis' in window) {
+        const utter = new SpeechSynthesisUtterance(text);
+        window.speechSynthesis.speak(utter);
+      } else {
+        alert(text);
+      }
+    }
+
+    function showRightsFaq(id) {
+      const box = document.getElementById("rights-answer-box");
+      if (id === 1) {
+        box.innerHTML = `
+          <h4>Why is my overtime pay different this month?</h4>
+          <p style="margin-top:0.4rem;">Overtime pay depends on verified biometric gate hours beyond 8 hours and whether you reached the monthly safety overtime limit (20 hours). Overtime is credited at 1.5x your regular rate.</p>
+          <hr style="margin:0.6rem 0; border:none; border-top:1px solid var(--border-color);">
+          <b>⚡ Practical Next Steps:</b>
+          <p>1. Check gate punch times in Attendance tab.<br>2. Confirm authorized deductions.<br>3. File a wage reconciliation ticket if hours are missing.</p>
+        `;
+      } else if (id === 2) {
+        box.innerHTML = `
+          <h4>What should I do if my salary hasn't been paid?</h4>
+          <p style="margin-top:0.4rem;">Under standard labor guidelines (SDG 8.5), salaries must be cleared within 7 to 10 days of the month-end.</p>
+          <hr style="margin:0.6rem 0; border:none; border-top:1px solid var(--border-color);">
+          <b>⚡ Practical Next Steps:</b>
+          <p>1. Verify bank IFSC details with HR.<br>2. Inquire with site supervisor for batch reference.<br>3. Submit a confidential wage dispute report.</p>
+        `;
+      } else if (id === 3) {
+        box.innerHTML = `
+          <h4>How do I report an unsafe working condition?</h4>
+          <p style="margin-top:0.4rem;">You have a protected right to safe conditions under SDG 8.8. Unsafe scaffolding, toxic fumes, or faulty machinery must be reported immediately without fear of retaliation.</p>
+          <hr style="margin:0.6rem 0; border:none; border-top:1px solid var(--border-color);">
+          <b>⚡ Practical Next Steps:</b>
+          <p>1. For immediate danger, tap the top red Emergency Report button.<br>2. For recurring hazards, submit an Anonymous Grievance report.<br>3. Never operate machinery without safety guards.</p>
+        `;
+      } else {
+        box.innerHTML = `
+          <h4>What does this deduction on my payslip mean?</h4>
+          <p style="margin-top:0.4rem;">Authorized deductions cover canteen meals, safety gear advances, or statutory social security. Employers cannot deduct arbitrary amounts without written notification.</p>
+          <hr style="margin:0.6rem 0; border:none; border-top:1px solid var(--border-color);">
+          <b>⚡ Practical Next Steps:</b>
+          <p>1. Check initial enrollment agreement.<br>2. Check if a uniform advance was deducted twice.<br>3. Request an itemized payroll statement.</p>
+        `;
+      }
+    }
+
+    // =========================================================================
+    // EMPLOYER VIEWS (FAIRSHIFT GUARDIAN + CHART.JS)
+    // =========================================================================
+    function renderEmployerPortal(container) {
+      if (activeTab === "dashboard") {
+        container.innerHTML = `
+          <div class="grid-4">
+            <div class="card"><small>Active Workforce On-Site</small><h2>${currentUser.industry.includes('Construction')?'1,240':'430'}</h2><span class="badge badge-sage">Biometric Verified</span></div>
+            <div class="card"><small>Audited Payroll Parity</small><h2 style="color:var(--success-green);">97.8%</h2><span class="badge badge-sage">2 Items Flagged</span></div>
+            <div class="card"><small>High-Severity Safety Flags</small><h2 style="color:var(--danger-red);">2</h2><span class="badge badge-urgent">Action Required</span></div>
+            <div class="card"><small>Active Interventions</small><h2 style="color:var(--warning-amber);">${STORE.interventions.length}</h2><span class="badge badge-warning">1 Completed</span></div>
+          </div>
+          <div class="card card-warning">
+            <h4>⚡ Priority Executive Actions Required</h4>
+            <div style="margin-top:0.5rem;">
+              ${STORE.interventions.map(i=>`
+                <div style="padding:0.4rem 0; border-bottom:1px solid rgba(0,0,0,0.05);">
+                  <b>${i.problem}</b> — Assigned to <b>${i.department}</b> (Target: ${i.target_date})<br>
+                  <small style="color:var(--text-muted);">Evidence: ${i.evidence}</small>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      } else if (activeTab === "audit") {
+        container.innerHTML = `
+          <div class="card card-warning">
+            <div style="display:flex; justify-content:space-between;">
+              <b>Audit Flag #AUD-881 • Night Shift Rigging Crew (Batch 3)</b>
+              <span class="badge badge-warning">Audit Pending Review</span>
+            </div>
+            <p style="margin:0.3rem 0; font-weight:600; color:#7B341E;">Issue: Overtime Reconciliation Discrepancy</p>
+            <div style="background:rgba(0,0,0,0.03); padding:0.6rem 0.8rem; border-radius:6px; font-size:0.92rem;">
+              • <b>Biometric Evidence:</b> Gate 2 turnstile registered 18.5 overtime hours across 24 workers.<br>
+              • <b>Ledger Record:</b> Payroll register logged only 12.0 hours. Difference: 6.5 uncredited hours.<br>
+              • <b>Mathematical Proof:</b> <code>(18.5 hrs - 12.0 hrs) × (₹750/8 × 1.5) = ₹731 net variance/worker</code><br>
+              • <b>Financial Impact:</b> <b>₹17,544 total batch variance</b>
+            </div>
+            <small style="color:var(--text-muted); display:block; margin-top:0.4rem;">Flagged for internal reconciliation. Does not establish legal non-compliance.</small>
+          </div>
+          <button class="btn btn-secondary btn-block" onclick="alert('✅ Audit Complete: 1,670 timesheets verified against biometric logs.')">🔄 Re-run Automated Payroll Audit</button>
+        `;
+      } else if (activeTab === "radar") {
+        container.innerHTML = `
+          <div class="grid-2">
+            <div class="card">
+              <h4>🥧 Grievance Distribution by Category</h4>
+              <div style="height:240px; position:relative;">
+                <canvas id="chart-pie"></canvas>
+              </div>
+            </div>
+            <div class="card">
+              <h4>📊 Department Risk Indicator Index</h4>
+              <div style="height:240px; position:relative;">
+                <canvas id="chart-bar"></canvas>
+              </div>
+            </div>
+          </div>
+        `;
+        setTimeout(renderCharts, 50);
+      } else if (activeTab === "rootcause") {
+        container.innerHTML = `
+          <div class="card card-accent">
+            <h4>Cluster A: Elevated Scaffolding & Heavy Rigging Safety</h4>
+            <p style="margin:0.4rem 0;">• <b>Root Cause:</b> Occurs specifically during high-wind intervals when the concrete hoist crane is operating at full swing.</p>
+            <b>Recommended Protocol:</b>
+            <p style="font-size:0.92rem; color:#333;">1. Review crane operator radius limits.<br>2. Verify torque ratings on vertical scaffolding clamp bolts.<br>3. Implement wind-speed anemometer cutoff at 25 knots.</p>
+          </div>
+        `;
+      } else if (activeTab === "intervention") {
+        container.innerHTML = `
+          <div class="card">
+            <h4>➕ Create New Intervention Task Linked to an Alert</h4>
+            <input type="text" id="int-prob" placeholder="Problem requiring attention...">
+            <input type="text" id="int-ev" placeholder="Supporting evidence & alert basis...">
+            <input type="text" id="int-act" placeholder="Recommended remediation action...">
+            <div class="grid-2">
+              <select id="int-dept">
+                <option>Site Structural Safety</option>
+                <option>Payroll & HR Operations</option>
+                <option>Campus Facilities & Engineering</option>
+                <option>Estate & Campus Security</option>
+              </select>
+              <input type="date" id="int-date" value="${new Date().toISOString().split('T')[0]}">
+            </div>
+            <button class="btn btn-primary btn-block" onclick="createIntervention()">Create and Assign Plan</button>
+          </div>
+          <div id="intervention-list">
+            ${STORE.interventions.map((p, idx)=>`
+              <div class="card ${p.status==='Completed & Verified'?'card-resolved':'card-warning'}">
+                <div style="display:flex; justify-content:space-between;">
+                  <h4>Plan #${p.id}: ${p.problem}</h4>
+                  <span class="badge badge-sage">${p.department}</span>
+                </div>
+                <p style="margin:0.3rem 0; font-size:0.92rem;">• <b>Evidence:</b> ${p.evidence}</p>
+                <p style="margin:0.3rem 0; font-size:0.92rem;">• <b>Action:</b> ${p.action}</p>
+                <div style="display:flex; gap:0.5rem; margin-top:0.6rem; align-items:center;">
+                  <select style="width:auto; margin:0;" onchange="updatePlanStatus(${idx}, this.value)">
+                    <option ${p.status==='Pending Review'?'selected':''}>Pending Review</option>
+                    <option ${p.status==='Action In Progress'?'selected':''}>Action In Progress</option>
+                    <option ${p.status==='Completed & Verified'?'selected':''}>Completed & Verified</option>
+                  </select>
+                  <small style="color:var(--text-muted);">Status: <b>${p.status}</b></small>
+                </div>
+              </div>
+            `).join('')}
+          </div>
+        `;
+      }
+    }
+
+    function createIntervention() {
+      const prob = document.getElementById("int-prob").value.trim();
+      const ev = document.getElementById("int-ev").value.trim();
+      const act = document.getElementById("int-act").value.trim();
+      const dept = document.getElementById("int-dept").value;
+      const date = document.getElementById("int-date").value;
+      if (!prob || !act) {
+        alert("Please specify problem and recommended action.");
+        return;
+      }
+      STORE.interventions.unshift({
+        id: `INT-${STORE.interventions.length + 301}`,
+        industry: currentUser.industry,
+        problem: prob,
+        evidence: ev || "Manager created",
+        action: act,
+        department: dept,
+        target_date: date,
+        status: "Pending Review"
+      });
+      saveStore();
+      alert("✅ Intervention task created and assigned!");
+      renderPortal();
+    }
+
+    function updatePlanStatus(idx, val) {
+      STORE.interventions[idx].status = val;
+      saveStore();
+      renderPortal();
+    }
+
+    // Chart.js rendering for Risk Radar
+    function renderCharts() {
+      const pieCtx = document.getElementById('chart-pie');
+      if (pieCtx) {
+        new Chart(pieCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Faulty Machinery', 'Women Safety', 'Overtime Discrepancy', 'General Hazard'],
+            datasets: [{
+              data: [35, 25, 20, 20],
+              backgroundColor: ['#4D624E', '#C53030', '#B7791F', '#859883']
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+      }
+      const barCtx = document.getElementById('chart-bar');
+      if (barCtx) {
+        new Chart(barCtx, {
+          type: 'bar',
+          data: {
+            labels: ['Heavy Machinery', 'Scaffolding Zone', 'Night Facilities', 'Lab Chemicals', 'Sanitation'],
+            datasets: [{
+              label: 'Risk Index (0-100)',
+              data: [78, 85, 62, 70, 45],
+              backgroundColor: '#5F7161'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, max: 100 } }
+          }
+        });
+      }
+    }
+  </script>
+</body>
+</html>
